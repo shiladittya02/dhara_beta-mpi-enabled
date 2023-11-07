@@ -1,7 +1,7 @@
 # 2d_flow_mpi_dhara_beta
 ## - MPI enabled beta version of DHARA Compressible Flow Solver 
 
-- The base sequential code (GPU enabled), `dhara_beta`, was developed by harshitiwari.
+- The base sequential code (GPU enabled), `dhara_beta`, was developed by @harshitiwari.
 - This is an MPI and GPU enabled Python code which solves fully compressible equations for polytropic fluid in 2D Cartesian box.  
 
 ### Instructions to run the code:
