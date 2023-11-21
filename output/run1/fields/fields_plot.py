@@ -2,8 +2,8 @@ import h5py
 import sys
 import numpy as np
 #sys.path.append("../output/run1/fields")
-nprocs = 2
-size= 257
+nprocs = 4
+size= 1025
 lag = size//nprocs
 #size= 257
 ux1 = np.empty([size,size], dtype=np.float64)
@@ -12,8 +12,8 @@ rho1 = np.empty([size,size], dtype=np.float64)
 print("rho1: ", rho1.shape)
 
 for i in range(nprocs):
-    filename = f'2D_20.00proc {i}.h5'
-    if i<1:
+    filename = f'2D_10.00proc {i}.h5'
+    if i<3:
         f = h5py.File(filename,'r')
         rho1[:,i*lag:(i+1)*lag] = f['rho']
         ux1[:,i*lag:(i+1)*lag] = f['ux']

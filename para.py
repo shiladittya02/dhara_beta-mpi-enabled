@@ -10,13 +10,13 @@ Scheme = 'EULER'          # Time integration scheme, EULER
 # ----------------------------- Grid parameters ---------------------------- #
 
 tinit = 0                 # Initial time
-tfinal = 20              # Final time
+tfinal = 10              # Final time
 dt = 0.1                 # Single time step
 
 Lz = 2*np.pi              # Length of box in z-direction
 
-Nz = 256                  # Number of grid points in z-direction
-Nx = 256                  # Number of grid points in x-direction
+Nz = 128                 # Number of grid points in z-direction
+Nx = 128                 # Number of grid points in x-direction
 
 # -------------------------------------------------------------------------- #
 
@@ -33,7 +33,7 @@ gamma = 1.3               # gamma = C_p/C_v
 # Keep N_fs in multiple of 2
 N_fs = 8                  # Number of uniform z-surfaces for flux calculation 
  
-t_f = 20                   # Field files saving time
+t_f = 10                   # Field files saving time
 t_p = 0.1                # Energies and other parameters printing time
 
 # -------------------------------------------------------------------------- #

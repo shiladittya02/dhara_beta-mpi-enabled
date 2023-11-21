@@ -1,5 +1,6 @@
 from grid import ncp,copy
 import grid
+from mpi_module import *
 import compressible as cs
 from derivative import *
 import h5py
@@ -30,7 +31,7 @@ def total_internal_energy():
     
 def vrms():
     # V_rms volume average
-    return ncp.sqrt(simps2d((cs.ux**2 + cs.uz**2),grid.X,grid.Z_mesh))/(grid.Lx*para.Lz)
+    return ncp.sqrt(simps2d((cs.ux**2 + cs.uz**2),grid.X,grid.Z_mesh)/(grid.Lx*para.Lz))
 
 def max_Mach_number():
     # Maximum Mach number
@@ -43,8 +44,17 @@ def print_output(t):
     Ie = total_internal_energy()
     V_rms = vrms()
     M = max_Mach_number()
-    
-    print(t, M_T, Ke, Ie, V_rms, M)
+    totalM_T = ncp.zeros_like(M_T)
+    totalKe = ncp.zeros_like(Ke)
+    totalIe = ncp.zeros_like(Ie)
+    #totalV_rms = ncp.zeros_like(V_rms)
+    #totalM = ncp.zeros_like(M)
+    comm.Reduce(M_T, totalM_T, root=0, op=MPI.SUM)
+    comm.Reduce(Ke, totalKe, root=0, op=MPI.SUM)
+    comm.Reduce(Ie, totalIe, root=0, op=MPI.SUM)
+    #comm.Reduce(V_rms, totalV_rms, root=0, op=MPI.SUM)
+    if rank==0:
+        print(t, totalM_T, totalKe, totalIe, V_rms, M)
 
     if math.isnan(Ke):
         print ('# Try different parameters..Energy became infinity, code blew up at t = ', t)    

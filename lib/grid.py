@@ -20,10 +20,11 @@ t = ncp.arange(tinit, tfinal + dt, dt)  # Time axis
 
 Nf = int((tfinal - tinit) / t_f)  # Number of field saving times
 t_f_step = ncp.linspace(tinit, tfinal, Nf + 1)  # Field saving times
-
+t_f_step = ncp.insert(t_f_step, len(t_f_step), tfinal + dt)
 Np = int((tfinal - tinit) / t_p)  # Number of energies and other parameters printing saving times
 t_p_step = ncp.linspace(tinit, tfinal, Np + 1)  # Energies and other parameters printing saving times
-
+t_p_step = ncp.insert(t_p_step, len(t_p_step), tfinal + dt)
+#print(t_p_step)
 # -------------------------------------------------------------------------- #
 
 # ----------------------------- Grid variables ----------------------------- #
