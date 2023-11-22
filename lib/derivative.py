@@ -30,29 +30,35 @@ else:
     def dfz(f):
         if rank == 0:
             grid.temp_dz[:,1:-1] = (f[:,2:] - f[:,:-2])/(2*grid.dz)
-            comm.Send(ncp.array(f[:, -1]), dest=(rank + 1), tag=int("1" + str(rank) + str(rank + 1)))
-            comm.Recv(buf, source=(rank + 1), tag=int("1" + str(rank + 1) + str(rank)))
+            comm.Isend(ncp.array(f[:, -1]), dest=(rank + 1), tag=int("1" + str(rank) + str(rank + 1)))
+            req1 = comm.Irecv(buf, source=(rank + 1), tag=int("1" + str(rank + 1) + str(rank)))
+            req1.Wait()
             grid.temp_dz[:,-1] = (buf - f[:,-2])/(2*grid.dz)
-            comm.Send(ncp.array(f[:,1]), dest=(nprocs -1), tag=int("1"+str(rank)+str(nprocs-1)))
-            comm.Recv(buf, source=(nprocs-1), tag=int("1"+str(nprocs-1)+str(rank)))
+            comm.Isend(ncp.array(f[:,1]), dest=(nprocs -1), tag=int("1"+str(rank)+str(nprocs-1)))
+            req2 = comm.Irecv(buf, source=(nprocs-1), tag=int("1"+str(nprocs-1)+str(rank)))
+            req2.Wait()
             grid.temp_dz[:,0] = buf
             return grid.temp_dz
         elif rank > 0 and rank < nprocs - 1:
             grid.temp_dz[:, 1:-1] = (f[:, 2:] - f[:, :-2]) / (2 * grid.dz)
-            comm.Send(ncp.array(f[:, -1]), dest=(rank + 1), tag=int("1" + str(rank) + str(rank + 1)))
-            comm.Send(ncp.array(f[:, 0]), dest=(rank - 1), tag=int("1" + str(rank) + str(rank - 1)))
-            comm.Recv(buf, source=(rank - 1), tag=int("1" + str(rank - 1) + str(rank)))
-            grid.temp_dz[:,0] = (f[:,1] - buf)/(2*grid.dz)
-            comm.Recv(buf, source=(rank + 1), tag=int("1" + str(rank + 1) + str(rank)))
+            comm.Isend(ncp.array(f[:, -1]), dest=(rank + 1), tag=int("1" + str(rank) + str(rank + 1)))
+            req1 = comm.Irecv(buf, source=(rank - 1), tag=int("1" + str(rank - 1) + str(rank)))
+            req1.Wait()
+            grid.temp_dz[:, 0] = (f[:, 1] - buf) / (2 * grid.dz)
+            comm.Isend(ncp.array(f[:, 0]), dest=(rank - 1), tag=int("1" + str(rank) + str(rank - 1)))
+            req2 = comm.Irecv(buf, source=(rank + 1), tag=int("1" + str(rank + 1) + str(rank)))
+            req2.Wait()
             grid.temp_dz[:,-1] = (buf - f[:,-2])/(2*grid.dz)
             return grid.temp_dz
         elif rank == nprocs-1:
             grid.temp_dz[:, 1:-1] = (f[:, 2:] - f[:, :-2]) / (2 * grid.dz)
-            comm.Send(ncp.array(f[:,0]), dest=(rank-1), tag=int("1"+str(rank)+str(rank-1)))
-            comm.Recv(buf, source=(rank - 1), tag=int("1" + str(rank - 1) + str(rank)))
+            comm.Isend(ncp.array(f[:,0]), dest=(rank-1), tag=int("1"+str(rank)+str(rank-1)))
+            req1 = comm.Irecv(buf, source=(rank - 1), tag=int("1" + str(rank - 1) + str(rank)))
+            req1.Wait()
             grid.temp_dz[:, 0] = (f[:,1] - buf)/(2*grid.dz)
-            comm.Recv(buf, source=nprocs-nprocs, tag=int("1"+str(nprocs-nprocs)+str(nprocs-1)))
+            req2 = comm.Irecv(buf, source=nprocs-nprocs, tag=int("1"+str(nprocs-nprocs)+str(nprocs-1)))
+            req2.Wait()
             grid.temp_dz[:, -1] = (buf - f[:,-2])/(2*grid.dz)
-            comm.Send(ncp.array(grid.temp_dz[:, -1]), dest=nprocs-nprocs, tag=int("1"+str(nprocs-1)+str(nprocs-nprocs)))
+            comm.Isend(ncp.array(grid.temp_dz[:, -1]), dest=nprocs-nprocs, tag=int("1"+str(nprocs-1)+str(nprocs-nprocs)))
             return grid.temp_dz
 

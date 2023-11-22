@@ -64,7 +64,7 @@ def print_output(t):
 
 def save_fields(t):
     # Saving the fields
-    parameters = ncp.array([para.gamma, para.C, para.dt])
+    '''parameters = ncp.array([para.gamma, para.C, para.dt])
 
     hf1 = h5py.File(para.output_dir + "/fields/2D_%.2f" % (t)+"proc "+str(rank)+".h5", 'w')
     if para.device == 'CPU':
@@ -80,5 +80,5 @@ def save_fields(t):
         hf1.create_dataset('uz', data=cs.uz.get())
         hf1.create_dataset('parameters', data=parameters.get())
         hf1.close()
-        pass
+        pass'''
     pass

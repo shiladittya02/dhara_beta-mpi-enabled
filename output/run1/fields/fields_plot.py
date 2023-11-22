@@ -12,8 +12,8 @@ rho1 = np.empty([size,size], dtype=np.float64)
 print("rho1: ", rho1.shape)
 
 for i in range(nprocs):
-    filename = f'2D_10.00proc {i}.h5'
-    if i<3:
+    filename = f'2D_0.00proc {i}.h5'
+    if i<(nprocs-1):
         f = h5py.File(filename,'r')
         rho1[:,i*lag:(i+1)*lag] = f['rho']
         ux1[:,i*lag:(i+1)*lag] = f['ux']
@@ -93,4 +93,5 @@ plt.ylim(-7, 7)'''
 
 # Show plot with grid
 plt.grid()
+plt.savefig("test.png")
 plt.show()
